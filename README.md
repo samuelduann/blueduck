@@ -69,4 +69,3 @@ Use `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` if `xcode-select`
 - Last writer wins: concurrent edits from another client are not detected as conflicts.
 - Folders cannot be renamed or moved. Files over 5 GB cannot be renamed or moved (CopyObject limit).
 - Partial reads apply only when macOS asks for them (POSIX reads); most document apps download the whole file.
->>>>>>> 43205c9 (initial)
