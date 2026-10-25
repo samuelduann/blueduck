@@ -1,0 +1,5 @@
+// Signing for File Provider requires an Apple Developer team.
+// Put your team in Config/Local.xcconfig (gitignored):
+//   DEVELOPMENT_TEAM = ABCDE12345
+DEVELOPMENT_TEAM =
+#include? "Local.xcconfig"

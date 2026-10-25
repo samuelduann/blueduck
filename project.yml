@@ -1,0 +1,86 @@
+name: BlueDuck
+options:
+  bundleIdPrefix: club.vaniti
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+packages:
+  BlueDuckKit:
+    path: Packages/BlueDuckKit
+targets:
+  BlueDuck:
+    type: application
+    platform: macOS
+    sources: [App]
+    dependencies:
+      - package: BlueDuckKit
+      - target: BlueDuckFileProvider
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: club.vaniti.blueduck
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: BlueDuck
+        LSApplicationCategoryType: public.app-category.utilities
+        BlueDuckAppGroup: $(TeamIdentifierPrefix)club.vaniti.blueduck
+    entitlements:
+      path: App/BlueDuck.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)club.vaniti.blueduck
+        # Requires a provisioning profile, which gives the binary the application-identifier
+        # entitlement that the data-protection keychain checks.
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)club.vaniti.blueduck
+
+  BlueDuckFileProvider:
+    type: app-extension
+    platform: macOS
+    sources: [FileProviderExtension]
+    dependencies:
+      - package: BlueDuckKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: club.vaniti.blueduck.FileProvider
+    info:
+      path: FileProviderExtension/Info.plist
+      properties:
+        CFBundleDisplayName: BlueDuck File Provider
+        BlueDuckAppGroup: $(TeamIdentifierPrefix)club.vaniti.blueduck
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.fileprovider-nonui
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).FileProviderExtension
+          NSExtensionFileProviderDocumentGroup: $(TeamIdentifierPrefix)club.vaniti.blueduck
+          NSExtensionFileProviderSupportsEnumeration: true
+          NSExtensionFileProviderActions:
+            - NSExtensionFileProviderActionIdentifier: club.vaniti.blueduck.action.keepOffline
+              NSExtensionFileProviderActionName: Keep Offline
+              NSExtensionFileProviderActionActivationRule: "SUBQUERY ( fileproviderItems, $fileproviderItem, $fileproviderItem.userInfo.pinned == NO ).@count > 0"
+            - NSExtensionFileProviderActionIdentifier: club.vaniti.blueduck.action.removeOffline
+              NSExtensionFileProviderActionName: Remove Offline Copy
+              NSExtensionFileProviderActionActivationRule: "SUBQUERY ( fileproviderItems, $fileproviderItem, $fileproviderItem.userInfo.pinned == YES ).@count > 0"
+    entitlements:
+      path: FileProviderExtension/BlueDuckFileProvider.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)club.vaniti.blueduck
+        # Requires a provisioning profile, which gives the binary the application-identifier
+        # entitlement that the data-protection keychain checks.
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)club.vaniti.blueduck
