@@ -7,6 +7,7 @@ let log = Logger(subsystem: "club.vaniti.blueduck.FileProvider", category: "exte
 enum ActionID {
     static let keepOffline = "club.vaniti.blueduck.action.keepOffline"
     static let removeOffline = "club.vaniti.blueduck.action.removeOffline"
+    static let refresh = "club.vaniti.blueduck.action.refresh"
 }
 
 final class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
@@ -270,6 +271,17 @@ final class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, 
                 signalWorkingSet()
                 completionHandler(nil)
                 await evict(itemIdentifiers)
+
+            case ActionID.refresh:
+                for id in ids {
+                    // Listing applies the changes to the store, so the working set must be told about them explicitly.
+                    if store.record(id)?.isFolder == true {
+                        store.markChanged(try await listFolder(id).changed.map(\.id))
+                    }
+                    progress.completedUnitCount += 1
+                }
+                signalWorkingSet()
+                completionHandler(nil)
 
             default:
                 throw NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError)

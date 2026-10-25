@@ -73,6 +73,9 @@ targets:
             - NSExtensionFileProviderActionIdentifier: club.vaniti.blueduck.action.removeOffline
               NSExtensionFileProviderActionName: Remove Offline Copy
               NSExtensionFileProviderActionActivationRule: "SUBQUERY ( fileproviderItems, $fileproviderItem, $fileproviderItem.userInfo.pinned == YES ).@count > 0"
+            - NSExtensionFileProviderActionIdentifier: club.vaniti.blueduck.action.refresh
+              NSExtensionFileProviderActionName: Refresh
+              NSExtensionFileProviderActionActivationRule: "SUBQUERY ( fileproviderItems, $fileproviderItem, $fileproviderItem.userInfo.folder == YES ).@count > 0"
     entitlements:
       path: FileProviderExtension/BlueDuckFileProvider.entitlements
       properties:

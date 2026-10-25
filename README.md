@@ -6,6 +6,7 @@ Each bucket appears under **Locations** in the Finder sidebar (`~/Library/CloudS
 - Files download on demand when opened; Finder shows cloud/download status.
 - Right-click → **Keep Offline** downloads a file or folder (recursively) and keeps it downloaded.
   **Remove Offline Copy** reverts it to on-demand and frees the disk space.
+- Right-click a folder → **Refresh** re-lists it from the bucket to pick up remote changes.
 - Finder's built-in **Download Now** / **Remove Download** also work.
 - Works with AWS S3 and S3-compatible services (MinIO, Cloudflare R2, Wasabi, SeaweedFS…).
 

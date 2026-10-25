@@ -67,6 +67,6 @@ final class FileProviderItem: NSObject, NSFileProviderItem {
 
     /// Read by the Finder action activation rules in Info.plist.
     var userInfo: [AnyHashable: Any]? {
-        ["pinned": pinned]
+        ["pinned": pinned, "folder": record.isFolder]
     }
 }
