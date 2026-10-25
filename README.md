@@ -67,5 +67,5 @@ Use `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` if `xcode-select`
 
 - Remote changes are picked up only while the app is running (or when Finder re-enumerates a folder).
 - Last writer wins: concurrent edits from another client are not detected as conflicts.
-- Folders cannot be renamed or moved. Files over 5 GB cannot be renamed or moved (CopyObject limit).
+- Folders cannot be moved, and only empty folders can be renamed. Files over 5 GB cannot be renamed or moved (CopyObject limit).
 - Partial reads apply only when macOS asks for them (POSIX reads); most document apps download the whole file.

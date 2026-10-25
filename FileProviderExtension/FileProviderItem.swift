@@ -37,9 +37,9 @@ final class FileProviderItem: NSObject, NSFileProviderItem {
             return [.allowsReading, .allowsContentEnumerating, .allowsAddingSubItems]
         }
         // No .allowsTrashing: S3 has no trash, so Finder deletes immediately.
-        // No .allowsRenaming or .allowsReparenting on folders: directory paths are fixed.
+        // No .allowsReparenting on folders. Renaming is offered, but only empty folders are actually renamed.
         if record.isFolder {
-            return [.allowsReading, .allowsContentEnumerating, .allowsAddingSubItems, .allowsDeleting]
+            return [.allowsReading, .allowsContentEnumerating, .allowsAddingSubItems, .allowsRenaming, .allowsDeleting]
         }
         return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsDeleting]
     }

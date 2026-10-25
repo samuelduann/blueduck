@@ -122,8 +122,13 @@ final class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, 
                 completionHandler(self.item(record), [], false, nil)
                 return
             }
-            // Folders cannot be renamed or moved; returning the stored path makes the system revert the change.
-            let newName = changedFields.contains(.filename) && !record.isFolder ? item.filename : record.name
+            // Folders cannot be moved, and only empty ones can be renamed (S3 would need every key under the prefix
+            // copied); returning the stored path makes the system revert the change.
+            var newName = changedFields.contains(.filename) ? item.filename : record.name
+            if record.isFolder, newName != record.name {
+                let page = try await client.listPage(prefix: record.key, delimiter: nil, maxKeys: 2)
+                if page.objects.contains(where: { $0.key != record.key }) { newName = record.name }
+            }
             let newParent = changedFields.contains(.parentItemIdentifier) && !record.isFolder
                 ? item.parentItemIdentifier.rawValue : record.parentID
             let uploadContents = changedFields.contains(.contents) && !record.isFolder ? newContents : nil
@@ -133,7 +138,11 @@ final class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, 
                 guard let newKey = store.childKey(parentID: newParent, name: newName, isFolder: record.isFolder) else {
                     throw NSFileProviderError(.noSuchItem)
                 }
-                if let uploadContents {
+                if record.isFolder {
+                    // An empty folder is just its marker object.
+                    _ = try await client.put(key: newKey, data: Data())
+                    try await client.delete(key: record.key)
+                } else if let uploadContents {
                     let etag = try await client.put(key: newKey, file: uploadContents, progress: progress)
                     try await client.delete(key: record.key)
                     record.etag = etag
