@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Build output
+.build/
+build/
+DerivedData/
+
+# Xcode project is generated from project.yml by `xcodegen generate`
+BlueDuck.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.xcuserstate
+
+# Also generated from project.yml
+App/Info.plist
+App/BlueDuck.entitlements
+FileProviderExtension/Info.plist
+FileProviderExtension/BlueDuckFileProvider.entitlements
+
+# Swift Package Manager
+.swiftpm/
+Packages/*/.build/
+Packages/*/.swiftpm/
+
+# Local signing settings (DEVELOPMENT_TEAM)
+Config/Local.xcconfig
+
+# Editors
+.idea/
+.vscode/
